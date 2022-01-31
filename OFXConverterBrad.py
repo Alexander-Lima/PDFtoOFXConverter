@@ -34,6 +34,7 @@ class OFXConverterBrad (ClassOFXConverter):
                             results.append(stmnt)
                 return results
         except:
+            self.rootPane.hideModal()
             raise Exception(f'Erro ao processar arquivo {self.format.upper()}!')
 
     def getConvertedValue(self, valueText):

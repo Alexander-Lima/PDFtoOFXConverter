@@ -27,6 +27,7 @@ class ClassOFXConverter:
                     tabula.convert_into(file_path, self.output_file_name, self.format, pages='all')
                     return True
                 except:
+                    self.rootPane.hideModal()
                     messagebox.showerror('ERRO!','Algo errado aconteceu!\nNão foi possível converter o arquivo.')
             else:
                 messagebox.showerror('ERRO!','Extensão de arquivo não suportada!')
@@ -61,9 +62,9 @@ class ClassOFXConverter:
                         f'\t    <MEMO>{stmnt.memo}</MEMO>\n' + 
                         '\t</STMTTRN>\n')
             newOFXFile.write('\n</OFX>')
-            newOFXFile.close()
-           
+            newOFXFile.close() 
         else:
+            self.rootPane.hideModal()
             raise Exception('Algo errado aconteceu! \nNenhum lançamento foi gerado.')
 
     def getNormalizedMemo(self):
@@ -85,7 +86,8 @@ class ClassOFXConverter:
                 self.rootPane.updateProgressBar(100)
                 self.rootPane.showRoot()
                 messagebox.showinfo(message='Arquivo gerado com sucesso!')
-        except Exception as e:
+        except:
+            self.rootPane.hideModal()
             messagebox.showerror('ERRO!', 'Erro inesperado, verifique o log gerado.')
             with open(r'C:\Users\contabil\Desktop/log.txt', 'w') as log:
                 log.write(traceback.format_exc())

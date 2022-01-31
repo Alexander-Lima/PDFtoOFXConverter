@@ -91,6 +91,8 @@ class Main():
 
     def hideModal(self):
         self.modalWin.withdraw()
+        self.rootPane.deiconify()
+        self.rootPane.update()
 
     def updateProgressBar(self,value):
         self.progressBar['value'] = value
