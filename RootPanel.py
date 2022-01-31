@@ -1,4 +1,6 @@
+from time import sleep, time
 import tkinter as tk
+from tkinter import ttk
 from OFXConverterBB import OFXConverterBB
 from OFXConverterBrad import OFXConverterBrad
 
@@ -65,11 +67,14 @@ class Main():
         self.modalWin = tk.Toplevel(self.rootPane)
         self.modalLabel = tk.Label(self.modalWin, text='AGUARDE,\nPROCESSANDO...',font=('Arial', 15, 'bold'))
 
+        self.progressBar = ttk.Progressbar(self.modalWin, length=170, mode='determinate', maximum=100)
+
         header.place(x=0, y=0)
         text.place(x=25, y=110)
         buttonBradesco.place(x=40, y=180)
         buttonBB.place(x=180, y=180)
         self.modalLabel.place(x=15,y=15)
+        self.progressBar.place(x=15, y=80)
        
     def startAll(self):
         self.setRootGeometry(320,300)
@@ -80,12 +85,18 @@ class Main():
     def showModal(self):
         self.hideRoot()
         self.modalWin.deiconify()
-        self.setModalGeometry(200,80)
+        self.setModalGeometry(200,120)
         self.setModalConfigs()
         self.rootPane.update()
 
     def hideModal(self):
         self.modalWin.withdraw()
+
+    def updateProgressBar(self,value):
+        self.progressBar['value'] = value
+        self.modalWin.update()
+        sleep(0.5)
+        self.progressBar['value'] = 0
 
     def processPDF(self, bank):
         if bank == 'BB':
@@ -95,8 +106,10 @@ class Main():
             self.converter = OFXConverterBrad(self)
             self.converter.processAll()
 
+
 main = Main()
 main.startAll()
+
 
 
 

@@ -62,8 +62,7 @@ class ClassOFXConverter:
                         '\t</STMTTRN>\n')
             newOFXFile.write('\n</OFX>')
             newOFXFile.close()
-            self.rootPane.showRoot()
-            messagebox.showinfo(message='Arquivo gerado com sucesso!')
+           
         else:
             raise Exception('Algo errado aconteceu! \nNenhum lançamento foi gerado.')
 
@@ -79,8 +78,13 @@ class ClassOFXConverter:
     def processAll (self):
         try:
             if self.getFormattedFile():
+                self.rootPane.updateProgressBar(33)
                 self.getStatements()
+                self.rootPane.updateProgressBar(67)
                 self.createOFX()
+                self.rootPane.updateProgressBar(100)
+                self.rootPane.showRoot()
+                messagebox.showinfo(message='Arquivo gerado com sucesso!')
         except Exception as e:
             messagebox.showerror('ERRO!', 'Erro inesperado, verifique o log gerado.')
             with open(r'C:\Users\contabil\Desktop/log.txt', 'w') as log:
