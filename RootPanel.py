@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import font
 from OFXConverterBB import OFXConverterBB
 from OFXConverterBrad import OFXConverterBrad
 
@@ -12,6 +11,7 @@ class Main():
         self.rootPaneCenterY = ''
     
     def showPanel(self):
+        self.modalWin.withdraw()
         self.rootPane.mainloop()
 
     def setRootGeometry(self, width, height):
@@ -21,14 +21,14 @@ class Main():
         self.rootPane.geometry(f'{width}x{height}+{self.rootPaneCenterX}+{self.rootPaneCenterY}')
 
     def setModalGeometry(self, width, height):
-        self.modalWin = tk.Toplevel()
-        self.modalWin.geometry(f'{width}x{height}+600+300')
-        self.modalLabel = tk.Label(self.modalWin, text='AGUARDE,\nPROCESSANDO...',font=('Arial', 15, 'bold'))
+        coord = self.setCenter(width, height)
+        self.modalWin.geometry(f'{width}x{height}+{coord["x"]}+{coord["y"]}')
 
     def setModalConfigs(self):
         self.modalWin.title('')
         self.rootPane.config(bg='white')
         self.modalWin.resizable(width=0, height=0)
+        self.modalWin.overrideredirect(1)
 
     def setRootConfigs(self):
         self.rootPane.title('CONVERSOR PDF -> OFX')
@@ -42,6 +42,14 @@ class Main():
         centerY = int(screenMedheight - height/2)
         return {'x':centerX, 'y': centerY}
 
+    def hideRoot(self):
+        self.rootPane.withdraw()
+
+    def showRoot(self):
+        self.modalWin.withdraw()
+        self.rootPane.deiconify()
+        self.rootPane.update()
+
     def createComponents(self):
         self.bradescoImg = tk.PhotoImage(file = r'./Images/Bradesco_logo.png')
         buttonBradesco = tk.Button(self.rootPane, image=self.bradescoImg, height=75, width=100, command=lambda: self.processPDF('Brad'))
@@ -54,33 +62,44 @@ class Main():
         
         text = tk.Label(bg='white', height=2 ,text='SELECIONE O BANCO DE ORIGEM DO PDF:', font=('Arial', 10, 'bold'))
 
+        self.modalWin = tk.Toplevel(self.rootPane)
+        self.modalLabel = tk.Label(self.modalWin, text='AGUARDE,\nPROCESSANDO...',font=('Arial', 15, 'bold'))
+
         header.place(x=0, y=0)
         text.place(x=25, y=110)
         buttonBradesco.place(x=40, y=180)
         buttonBB.place(x=180, y=180)
-        self.modalLabel.pack()
+        self.modalLabel.place(x=15,y=15)
        
-
     def startAll(self):
         self.setRootGeometry(320,300)
         self.setRootConfigs()
-        self.setModalGeometry(200,50)
-        self.setModalConfigs()
         self.createComponents()
         self.showPanel()
 
+    def showModal(self):
+        self.hideRoot()
+        self.modalWin.deiconify()
+        self.setModalGeometry(200,80)
+        self.setModalConfigs()
+        self.rootPane.update()
+
+    def hideModal(self):
+        self.modalWin.withdraw()
+
     def processPDF(self, bank):
         if bank == 'BB':
-            self.converter = OFXConverterBB()
+            self.converter = OFXConverterBB(self)
             self.converter.processAll()
         elif bank == 'Brad':
-            self.converter = OFXConverterBrad()
+            self.converter = OFXConverterBrad(self)
             self.converter.processAll()
 
 main = Main()
 main.startAll()
 
-print('Git')
+
+
 
 
 

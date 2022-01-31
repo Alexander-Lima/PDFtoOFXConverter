@@ -5,10 +5,11 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 class ClassOFXConverter:
-    def __init__(self, format='tsv'):
+    def __init__(self, rootPane, format='tsv'):
         self.desktopPath = f'{os.environ["USERPROFILE"]}\Desktop'
         self.format = format
         self.output_file_name = self.desktopPath + r'\temporaryFile.' + format
+        self.rootPane = rootPane
 
     class Statement:
         def __init__(self, date, memo, value):
@@ -22,6 +23,7 @@ class ClassOFXConverter:
         if file_path:
             if file_path.find('.PDF') != -1 or file_path.find('.pdf') != -1:
                 try:
+                    self.rootPane.showModal()
                     tabula.convert_into(file_path, self.output_file_name, self.format, pages='all')
                     return True
                 except:
@@ -60,6 +62,7 @@ class ClassOFXConverter:
                         '\t</STMTTRN>\n')
             newOFXFile.write('\n</OFX>')
             newOFXFile.close()
+            self.rootPane.showRoot()
             messagebox.showinfo(message='Arquivo gerado com sucesso!')
         else:
             raise Exception('Algo errado aconteceu! \nNenhum lançamento foi gerado.')
